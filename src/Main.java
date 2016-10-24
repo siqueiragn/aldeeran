@@ -1,24 +1,34 @@
 import br.edu.ifrs.canoas.bd.produtos.Produto;
 import br.edu.ifrs.canoas.bd.localizacao.Localizacao;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 public class Main {
 
     public static void main(String args[]) {
+        Usuario usuario = new Usuario();
         while (true) {
             switch (montaMenu()) {
                 case 1:
                     switch (montaMenuUsuario()) {
                         case 1:
-                            String nome = JOptionPane.showInputDialog(null, "Cadastro\n" +
-                                    "Informe o nome:");
-                            String senha = JOptionPane.showInputDialog(null, "Informe uma senha:");
-                            int tipoUsuario = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário:\n"));
+                            usuario.setNome(JOptionPane.showInputDialog(null, "Cadastro Usuario\nInforme o nome:"));
+                            usuario.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
+                            usuario.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário:\n")));
+                            usuario.insert();
                             break;
                         case 2:
                             switch (alteracaoUsuario()) {
                                 case 1:
+                                    String nomeP = JOptionPane.showInputDialog(null, "--Alteração de nome--\n"
+                                            + "Informe o nome do usuário atual:");
+                                   for(Usuario u  : usuario){
+                                    if(nomeP == u.getNome()){
+                                        String novoNome = JOptionPane.showInputDialog(null, "Informe o novo nome:");
+                                        nome = novoNome;
+                                    }
+                                   }
                                     break;
                                 case 2:
                                     break;
@@ -54,13 +64,14 @@ public class Main {
                             int x = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização x do produto:"));
                             int y = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização y do produto:"));
                             int z = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização z do produto:"));
-                            Localizacao localizacao = new localizacao(z, y, z);
+                            
                             Categoria categoria = JOptionPane.showInputDialog(null, "informe a categoria do prodto");
                             Produto produto = new Produto(nome, descricao, localizacao, categoria);
                             break;
                         case 2:
                             switch (alteracaoUsuario()) {
                                 case 1:
+                                   
                                     break;
                                 case 2:
                                     break;
@@ -112,13 +123,13 @@ public class Main {
     }
 
     public static int montaMenuUsuario() {
-        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "         Menu Usuário\n" +
-                "1-Cadastro\n" +
-                "2-Alteração de dados\n" +
-                "3-Exclusão de usuário\n" +
-                "4-Listar todos\n" +
-                "5-Listar especifico\n" +
-                "Informe a opção:"));
+        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "-----Menu Usuário-----\n" +
+                "  1 - Cadastro\n" +
+                "  2 - Alteração de dados\n" +
+                "  3 - Exclusão de usuário\n" +
+                "  4 - Listar todos\n" +
+                "  5 - Listar especifico\n" +
+                "-----Informe a opção-----"));
         return opcao;
     }
 
