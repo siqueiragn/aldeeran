@@ -1,4 +1,5 @@
 import br.edu.ifrs.canoas.bd.produtos.Produto;
+import br.edu.ifrs.canoas.bd.localizacao.Localizacao;
 
 import javax.swing.*;
 
