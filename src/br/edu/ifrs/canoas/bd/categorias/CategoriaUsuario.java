@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import br.edu.ifrs.canoas.bd.conexao.Conexao;
-import br.edu.ifrs.canoas.bd.produtos.Produto;
 
 public class CategoriaUsuario {
 private int idCategoria;
