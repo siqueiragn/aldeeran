@@ -18,19 +18,21 @@ public class Main {
                             usuario.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário:\n")));
                             usuario.insert();
                             break;
+                      //GABRIEL FAÇA ISSO PLMDS
                         case 2:
                             switch (alteracaoUsuario()) {
                                 case 1:
-                                    String nomeP = JOptionPane.showInputDialog(null, "--Alteração de nome--\n"
-                                            + "Informe o nome do usuário atual:");
-                                   for(Usuario u  : usuario){
-                                    if(nomeP == u.getNome()){
-                                        String novoNome = JOptionPane.showInputDialog(null, "Informe o novo nome:");
-                                        nome = novoNome;
-                                    }
-                                   }
+                                   int id = Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do usuário que deseja alterar"));
+                                   usuario.setNome(nome);
+                                   usuario.setSenha(senha);
+                                   usuario.setTipoUsuario(id);
+                                    usuario.update(id);
+                                   
                                     break;
                                 case 2:
+                                    usuario.setSenha(senha);
+                                    usuario.setTipoUsuario(id);
+                                    usuario.update(id);
                                     break;
                                 case 3:
                                     break;
