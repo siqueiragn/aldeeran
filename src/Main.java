@@ -18,22 +18,7 @@ public class Main {
 
     public static void main(String args[]) {
         boolean authMe = false;
-        while (true) {
-            ArrayList<CategoriaUsuario> ctUserList = getAll();
-            String auxListUser = "\n";
-            for (CategoriaUsuario ctUserList1 : ctUserList) {
-                auxListUser += ctUserList1.getIdCategoria() + " - " + ctUserList1.getNome() + "\n";
-            }
-
-            ArrayList<CategoriaProduto> ctProdLista = new ArrayList<>();
-            CategoriaProduto ctProd = null;
-            ctProdLista = getLista();
-            String auxLista = "\n";
-            for (CategoriaProduto ctProdLista1 : ctProdLista) {
-                auxLista += ctProdLista1.getIdCategoria() + " - " + ctProdLista1.getNome() + "\n";
-            }
-
-            Usuario userLogged = new Usuario();
+        Usuario userLogged = new Usuario();
             int idLogin;
             String senha = "";
             if (authMe == false) {
@@ -51,22 +36,37 @@ public class Main {
                     JOptionPane.showMessageDialog(null, "ID inexistente!");
                 }
             }
+        while (true) {
+            ArrayList<CategoriaUsuario> ctUserList = getAll();
+            String auxListUser = "\n";
+            for (CategoriaUsuario ctUserList1 : ctUserList) {
+                auxListUser += ctUserList1.getIdCategoria() + " - " + ctUserList1.getNome() + "\n";
+            }
 
+            ArrayList<CategoriaProduto> ctProdLista = new ArrayList<>();
+            CategoriaProduto ctProd = null;
+            ctProdLista = getLista();
+            String auxLista = "\n";
+            for (CategoriaProduto ctProdLista1 : ctProdLista) {
+                auxLista += ctProdLista1.getIdCategoria() + " - " + ctProdLista1.getNome() + "\n";
+            }
+            
             if (authMe == true) {
                 switch (montaMenu()) {
                     case 1:
                         switch (montaMenuUsuario()) {
                             case 1:
-                                if(userLogged.getTipoUsuario() > 2){
-                                Usuario user = new Usuario();
-                                user.setNome(JOptionPane.showInputDialog(null, "Cadastro\n"
-                                        + "Informe o nome:"));
-                                user.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
+                                if (userLogged.getTipoUsuario() > 2) {
+                                    Usuario user = new Usuario();
+                                    user.setNome(JOptionPane.showInputDialog(null, "Cadastro\n"
+                                            + "Informe o nome:"));
+                                    user.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
 
-                                user.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário: " + auxListUser)));
-                                user.insert();
-                                } else 
+                                    user.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário: " + auxListUser)));
+                                    user.insert();
+                                } else {
                                     JOptionPane.showMessageDialog(null, "Sem permissão!");
+                                }
                                 break;
                             case 2:
                                 int id;
@@ -75,7 +75,7 @@ public class Main {
                                 } else {
                                     id = userLogged.getIdUsuario();
                                 }
-                                
+
                                 Usuario user = new Usuario();
                                 switch (alteracaoUsuario()) {
                                     // NOME
@@ -99,6 +99,7 @@ public class Main {
                                 }
                                 break;
                             case 3:
+
                                 if (userLogged.getTipoUsuario() > 2) {
                                     user = new Usuario();
                                     user.delete(Integer.parseInt(JOptionPane.showInputDialog(null, "Exclusão: \nInforme a ID do usuário que deseja excluir: ")));
@@ -116,9 +117,15 @@ public class Main {
                                 break;
                             case 5:
                                 user = new Usuario();
-                                user = loadUser(Integer.parseInt(JOptionPane.showInputDialog("Informe o ID do usuário que deseja localizar: ")));
+                                int idUser;
+                                if (userLogged.getTipoUsuario() > 1) {
+                                    idUser = Integer.parseInt(JOptionPane.showInputDialog("Informe o ID do usuário que deseja localizar: "));
+                                } else {
+                                    idUser = userLogged.getIdUsuario();
+                                }
+                                user = user.loadUser(idUser);
+                                
                                 JOptionPane.showMessageDialog(null, user.toString());
-
                                 break;
                             case 0:
                                 break;
@@ -215,7 +222,7 @@ public class Main {
                         }
                         break;
                     case 3:
-
+                        
                         break;
 
                     case 4:/* IMPLEMENTAR FUTURAMENTE
