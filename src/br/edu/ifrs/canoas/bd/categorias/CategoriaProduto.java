@@ -43,7 +43,7 @@ public class CategoriaProduto {
         this.descricao = descricao;
     }
     
-    public ArrayList<CategoriaProduto> getLista(){
+    public static ArrayList<CategoriaProduto>  getLista(){
        String selectSQL = "SELECT * FROM categoria_produto";
 		
 		Conexao c = new Conexao();
@@ -63,10 +63,27 @@ public class CategoriaProduto {
                         }
 
 		} catch (SQLException f) {
-			                 System.out.println("TÁ COM ERRO CLASSE CATEGORIAPRODUTO");
+                    f.printStackTrace();
+			                 //System.out.println("TÁ COM ERRO CLASSE CATEGORIAPRODUTO");
 		}
+                c.desconecta();
 		return listProd;
 	}
 
+    public void insert() {
+	Conexao c = new Conexao();
+	Connection dbConnection = c.getConexao();
+	PreparedStatement pS = null;
+	String insertTSQL = "INSERT INTO categoria_produto(nome, descricao) VALUES (?,?)";
+	try {
+		pS = dbConnection.prepareStatement(insertTSQL);
+		pS.setString(1, this.nome);
+		pS.setString(2, this.descricao);
+		pS.executeUpdate();
+		c.desconecta();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+}
     
 }

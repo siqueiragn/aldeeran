@@ -61,20 +61,22 @@ public CategoriaUsuario load(String nome) {
 	} catch (SQLException f) {
 		f.printStackTrace();
 	}
+        c.desconecta();
 	return usrCat;
 }
 
-public ArrayList<CategoriaUsuario> getAll() {
+public static ArrayList<CategoriaUsuario> getAll() {
 	String selectSQL = "SELECT * FROM categoria_usuario";
 	Conexao c = new Conexao();
 	ArrayList<CategoriaUsuario> lista = new ArrayList<>();
-	CategoriaUsuario usrCat = new CategoriaUsuario(); 
+	 
 	Connection dbConnection = c.getConexao();
 	Statement ps;
 	try {
 		ps = dbConnection.createStatement();
 		ResultSet rs = ps.executeQuery(selectSQL);
 		while (rs.next()) {
+                        CategoriaUsuario usrCat = new CategoriaUsuario();
 			usrCat.setIdCategoria(rs.getInt("id_categoria"));
 			usrCat.setNome(rs.getString("nome"));
 			usrCat.setDescricao(rs.getString("descricao"));
@@ -84,6 +86,7 @@ public ArrayList<CategoriaUsuario> getAll() {
 	} catch (SQLException f) {
 		f.printStackTrace();
 	}
+        c.desconecta();
 	return lista;
 }
 

@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class Conexao {
 	private String usuario = "gabriel_nunes";
 	private String senha = "98187625";
-	private String banco = "bd_N3";
+	private String banco = "alderaan";
 	private String servidor = "webacademico.canoas.ifrs.edu.br" ;
 	private int porta = 5432;
 	
