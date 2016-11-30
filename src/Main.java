@@ -10,6 +10,7 @@ import static br.edu.ifrs.canoas.bd.produtos.Produto.loadID;
 import br.edu.ifrs.canoas.bd.usuarios.Usuario;
 import static br.edu.ifrs.canoas.bd.usuarios.Usuario.getAllUsers;
 import static br.edu.ifrs.canoas.bd.usuarios.Usuario.loadUser;
+import br.edu.ifrs.canos.bd.relacoes.MovimentarEstoque;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -19,23 +20,23 @@ public class Main {
     public static void main(String args[]) {
         boolean authMe = false;
         Usuario userLogged = new Usuario();
-            int idLogin;
-            String senha = "";
-            if (authMe == false) {
-                idLogin = Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do usuário: "));
-                senha = JOptionPane.showInputDialog("Informe a senha do usuário: ");
-                userLogged = loadUser(idLogin);
-                if (userLogged.getIdUsuario() != 0) {
-                    if (userLogged.getSenha().equals(senha)) {
-                        JOptionPane.showMessageDialog(null, "Autenticado com sucesso!");
-                        authMe = true;
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Senha inválida!");
-                    }
+        int idLogin;
+        String senha = "";
+        if (authMe == false) {
+            idLogin = Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do usuário: "));
+            senha = JOptionPane.showInputDialog("Informe a senha do usuário: ");
+            userLogged = loadUser(idLogin);
+            if (userLogged.getIdUsuario() != 0) {
+                if (userLogged.getSenha().equals(senha)) {
+                    JOptionPane.showMessageDialog(null, "Autenticado com sucesso!");
+                    authMe = true;
                 } else {
-                    JOptionPane.showMessageDialog(null, "ID inexistente!");
+                    JOptionPane.showMessageDialog(null, "Senha inválida!");
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "ID inexistente!");
             }
+        }
         while (true) {
             ArrayList<CategoriaUsuario> ctUserList = getAll();
             String auxListUser = "\n";
@@ -50,7 +51,7 @@ public class Main {
             for (CategoriaProduto ctProdLista1 : ctProdLista) {
                 auxLista += ctProdLista1.getIdCategoria() + " - " + ctProdLista1.getNome() + "\n";
             }
-            
+
             if (authMe == true) {
                 switch (montaMenu()) {
                     case 1:
@@ -124,7 +125,7 @@ public class Main {
                                     idUser = userLogged.getIdUsuario();
                                 }
                                 user = user.loadUser(idUser);
-                                
+
                                 JOptionPane.showMessageDialog(null, user.toString());
                                 break;
                             case 0:
@@ -222,7 +223,40 @@ public class Main {
                         }
                         break;
                     case 3:
-                        
+                        switch (menuMovimentarEstoque()) {
+                            case 1: // RETIRAR
+                                ArrayList<Produto> listaProdutos = getAllProducts();
+                                MovimentarEstoque mvEstoque = new MovimentarEstoque();
+                                String aux = "";
+                                for (Produto obj : listaProdutos) {
+                                    aux += "\n" + obj.getIdItemEstoque() + " - " + obj.getNome();
+                                }
+
+                                mvEstoque.setIdProduto(Integer.parseInt(JOptionPane.showInputDialog("Escolha o produto que deseja retirar: " + aux)));
+                                mvEstoque.setHorarioRetirado(JOptionPane.showInputDialog("Informe a data de retirada\n(DD-MM-AAAA)"));
+                                mvEstoque.setIdUsuario(userLogged.getIdUsuario());
+                                mvEstoque.retirarProduto();
+                                break;
+                            case 2: // DEVOLVER
+                                MovimentarEstoque mvEstQ = new MovimentarEstoque();
+                                mvEstQ.setHorarioDevolucao(JOptionPane.showInputDialog("Informe a data de devolução: "));
+                                mvEstQ.setIdProduto(Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do produto que deseja devolver: ")));
+                                mvEstQ.setIdUsuario(userLogged.getIdUsuario());
+                                mvEstQ.devolverProduto();
+                                break;
+                            case 3: // HISTORICO
+                                MovimentarEstoque mvEst = new MovimentarEstoque();
+                                ArrayList<MovimentarEstoque> mvEstLista = mvEst.loadRetirado(userLogged.getIdUsuario());
+                                String auxiliar = "";
+                                for (MovimentarEstoque obj : mvEstLista) {
+                                    auxiliar += obj.toString();
+                                }
+                                JOptionPane.showMessageDialog(null, auxiliar);
+                                break;
+                            case 0:
+                                System.exit(0);
+                                break;
+                        }
                         break;
 
                     case 4:/* IMPLEMENTAR FUTURAMENTE
@@ -259,6 +293,7 @@ public class Main {
         int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "        Menu\n"
                 + "1 - Usuário\n"
                 + "2 - Produto\n"
+                + "3 - Estoque\n"
                 + "0 - Sair\n"));
         return opcao;
     }
@@ -308,8 +343,13 @@ public class Main {
         return opcao;
     }
 
-    public static int menuAutenticado() {
-        return 1;
+    public static int menuMovimentarEstoque() {
+        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "    Menu de movimentação de estoque\n"
+                + "1 - Retirar produto\n"
+                + "2 - Devolver produto\n"
+                + "3 - Ver histórico\n"
+                + "0 - Sair"));
+        return opcao;
     }
 
 }
