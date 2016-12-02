@@ -5,12 +5,6 @@ import br.edu.ifrs.canoas.bd.categorias.CategoriaUsuario;
 import static br.edu.ifrs.canoas.bd.categorias.CategoriaUsuario.getAll;
 import br.edu.ifrs.canoas.bd.produtos.Produto;
 import br.edu.ifrs.canoas.bd.localizacao.Localizacao;
-import static br.edu.ifrs.canoas.bd.produtos.Produto.getAllProducts;
-import static br.edu.ifrs.canoas.bd.produtos.Produto.loadID;
-import br.edu.ifrs.canoas.bd.usuarios.Usuario;
-import static br.edu.ifrs.canoas.bd.usuarios.Usuario.getAllUsers;
-import static br.edu.ifrs.canoas.bd.usuarios.Usuario.loadUser;
-import br.edu.ifrs.canos.bd.relacoes.MovimentarEstoque;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -18,56 +12,87 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String args[]) {
-        boolean authMe = false;
-        Usuario userLogged = new Usuario();
-        int idLogin;
-        String senha = "";
-        if (authMe == false) {
-            idLogin = Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do usuário: "));
-            senha = JOptionPane.showInputDialog("Informe a senha do usuário: ");
-            userLogged = loadUser(idLogin);
-            if (userLogged.getIdUsuario() != 0) {
-                if (userLogged.getSenha().equals(senha)) {
-                    JOptionPane.showMessageDialog(null, "Autenticado com sucesso!");
-                    authMe = true;
-                } else {
-                    JOptionPane.showMessageDialog(null, "Senha inválida!");
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "ID inexistente!");
-            }
-        }
+        Usuario usuario = new Usuario();
         while (true) {
-            ArrayList<CategoriaUsuario> ctUserList = getAll();
-            String auxListUser = "\n";
-            for (CategoriaUsuario ctUserList1 : ctUserList) {
-                auxListUser += ctUserList1.getIdCategoria() + " - " + ctUserList1.getNome() + "\n";
-            }
-
-            ArrayList<CategoriaProduto> ctProdLista = new ArrayList<>();
-            CategoriaProduto ctProd = null;
-            ctProdLista = getLista();
-            String auxLista = "\n";
-            for (CategoriaProduto ctProdLista1 : ctProdLista) {
-                auxLista += ctProdLista1.getIdCategoria() + " - " + ctProdLista1.getNome() + "\n";
-            }
-
-            if (authMe == true) {
-                switch (montaMenu()) {
-                    case 1:
-                        switch (montaMenuUsuario()) {
-                            case 1:
-                                if (userLogged.getTipoUsuario() > 2) {
-                                    Usuario user = new Usuario();
-                                    user.setNome(JOptionPane.showInputDialog(null, "Cadastro\n"
-                                            + "Informe o nome:"));
-                                    user.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
-
-                                    user.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário: " + auxListUser)));
-                                    user.insert();
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Sem permissão!");
-                                }
+            switch (montaMenu()) {
+                case 1:
+                    switch (montaMenuUsuario()) {
+                        case 1:
+                            usuario.setNome(JOptionPane.showInputDialog(null, "Cadastro Usuario\nInforme o nome:"));
+                            usuario.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
+                            usuario.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário:\n")));
+                            usuario.insert();
+                            break;
+                      //GABRIEL FAÇA ISSO PLMDS
+                        case 2:
+                            switch (alteracaoUsuario()) {
+                                case 1:
+                                   int id = Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do usuário que deseja alterar"));
+                                   usuario.setNome(nome);
+                                   usuario.setSenha(senha);
+                                   usuario.setTipoUsuario(id);
+                                    usuario.update(id);
+                                   
+                                    break;
+                                case 2:
+                                    usuario.setSenha(senha);
+                                    usuario.setTipoUsuario(id);
+                                    usuario.update(id);
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    int opcao = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Sair", JOptionPane.YES_NO_OPTION);
+                                    if (JOptionPane.YES_OPTION == opcao)
+                                        System.exit(0);
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            JOptionPane.showInputDialog(null, "Exclusão");
+                            break;
+                        case 4:
+                            JOptionPane.showInputDialog(null, "Listar todos");
+                            break;
+                        case 5:
+                            JOptionPane.showInputDialog(null, "Listar especifico");
+                            break;
+                        default:
+                            JOptionPane.showInputDialog(null, "SE FAZ DE BURRO NÉ, VAI VOLTAR PRO FUNDAMENTAL PRA APRENDER A LER");
+                            break;
+                    }
+                case 2:
+                    switch (montaMenuProduto()) {
+                        case 1:
+                            String nome = JOptionPane.showInputDialog(null, "Cadastro:\n" +
+                                    "Informe o nome do produto:");
+                            String descricao = JOptionPane.showInputDialog(null, "Informe a descrição do produto:");
+                            int x = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização x do produto:"));
+                            int y = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização y do produto:"));
+                            int z = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização z do produto:"));
+                            
+                            Categoria categoria = JOptionPane.showInputDialog(null, "informe a categoria do prodto");
+                            Produto produto = new Produto(nome, descricao, localizacao, categoria);
+                            break;
+                        case 2:
+                            switch (alteracaoUsuario()) {
+                                case 1:
+                                   
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    int opcao = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Sair", JOptionPane.YES_NO_OPTION);
+                                    if (JOptionPane.YES_OPTION == opcao)
+                                        System.exit(0);
+                                    break;
+                                default:
+                                    break;
                                 break;
                             case 2:
                                 int id;
@@ -299,13 +324,13 @@ public class Main {
     }
 
     public static int montaMenuUsuario() {
-        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "         Menu Usuário\n"
-                + "1 - Cadastro\n"
-                + "2 - Alteração de dados\n"
-                + "3 - Exclusão de usuário\n"
-                + "4 - Listar todos\n"
-                + "5 - Listar especifico\n"
-                + "0 - Sair"));
+        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "-----Menu Usuário-----\n" +
+                "  1 - Cadastro\n" +
+                "  2 - Alteração de dados\n" +
+                "  3 - Exclusão de usuário\n" +
+                "  4 - Listar todos\n" +
+                "  5 - Listar especifico\n" +
+                "-----Informe a opção-----"));
         return opcao;
     }
 
