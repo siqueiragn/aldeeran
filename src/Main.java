@@ -5,94 +5,47 @@ import br.edu.ifrs.canoas.bd.categorias.CategoriaUsuario;
 import static br.edu.ifrs.canoas.bd.categorias.CategoriaUsuario.getAll;
 import br.edu.ifrs.canoas.bd.produtos.Produto;
 import br.edu.ifrs.canoas.bd.localizacao.Localizacao;
+import static br.edu.ifrs.canoas.bd.produtos.Produto.getAllProducts;
+import static br.edu.ifrs.canoas.bd.produtos.Produto.loadID;
+import br.edu.ifrs.canoas.bd.usuarios.Usuario;
+import static br.edu.ifrs.canoas.bd.usuarios.Usuario.getAllUsers;
+import br.edu.ifrs.canos.bd.relacoes.MovimentarEstoque;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
 public class Main {
-
+    
     public static void main(String args[]) {
+        Usuario userLogged = new Usuario();
         Usuario usuario = new Usuario();
-        while (true) {
-            switch (montaMenu()) {
-                case 1:
-                    switch (montaMenuUsuario()) {
-                        case 1:
-                            usuario.setNome(JOptionPane.showInputDialog(null, "Cadastro Usuario\nInforme o nome:"));
-                            usuario.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
-                            usuario.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário:\n")));
-                            usuario.insert();
-                            break;
-                      //GABRIEL FAÇA ISSO PLMDS
-                        case 2:
-                            switch (alteracaoUsuario()) {
-                                case 1:
-                                   int id = Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do usuário que deseja alterar"));
-                                   usuario.setNome(nome);
-                                   usuario.setSenha(senha);
-                                   usuario.setTipoUsuario(id);
-                                    usuario.update(id);
-                                   
-                                    break;
-                                case 2:
-                                    usuario.setSenha(senha);
-                                    usuario.setTipoUsuario(id);
-                                    usuario.update(id);
-                                    break;
-                                case 3:
-                                    break;
-                                case 4:
-                                    int opcao = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Sair", JOptionPane.YES_NO_OPTION);
-                                    if (JOptionPane.YES_OPTION == opcao)
-                                        System.exit(0);
-                                default:
-                                    break;
-                            }
-                            break;
-                        case 3:
-                            JOptionPane.showInputDialog(null, "Exclusão");
-                            break;
-                        case 4:
-                            JOptionPane.showInputDialog(null, "Listar todos");
-                            break;
-                        case 5:
-                            JOptionPane.showInputDialog(null, "Listar especifico");
-                            break;
-                        default:
-                            JOptionPane.showInputDialog(null, "SE FAZ DE BURRO NÉ, VAI VOLTAR PRO FUNDAMENTAL PRA APRENDER A LER");
-                            break;
-                    }
-                case 2:
-                    switch (montaMenuProduto()) {
-                        case 1:
-                            String nome = JOptionPane.showInputDialog(null, "Cadastro:\n" +
-                                    "Informe o nome do produto:");
-                            String descricao = JOptionPane.showInputDialog(null, "Informe a descrição do produto:");
-                            int x = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização x do produto:"));
-                            int y = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização y do produto:"));
-                            int z = Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização z do produto:"));
-                            
-                            Categoria categoria = JOptionPane.showInputDialog(null, "informe a categoria do prodto");
-                            Produto produto = new Produto(nome, descricao, localizacao, categoria);
-                            break;
-                        case 2:
-                            switch (alteracaoUsuario()) {
-                                case 1:
-                                   
-                                    break;
-                                case 2:
-                                    break;
-                                case 3:
-                                    break;
-                                case 4:
-                                    break;
-                                case 5:
-                                    int opcao = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Sair", JOptionPane.YES_NO_OPTION);
-                                    if (JOptionPane.YES_OPTION == opcao)
-                                        System.exit(0);
-                                    break;
-                                default:
-                                    break;
+        ArrayList<CategoriaUsuario> listaCategoriaUsuario = getAll();
+        ArrayList<CategoriaProduto> listaCategoriaProduto = getLista();
+        String auxListUser = "";
+        String auxListProd = "";
+        for (CategoriaUsuario catUser : listaCategoriaUsuario) {
+            auxListUser += "\n" + catUser.getIdCategoria() + " - " + catUser.getNome();
+        }
+        for (CategoriaProduto catProd : listaCategoriaProduto) {
+            auxListProd += "\n" + catProd.getIdCategoria() + " - " + catProd.getNome();
+        }
+        userLogged = userLogged.loadUser(Integer.parseInt(JOptionPane.showInputDialog("\nLogin: ")));
+        
+        if (userLogged.getSenha().equals(JOptionPane.showInputDialog("\nSenha: "))) {
+            JOptionPane.showMessageDialog(null, "Autenticado com sucesso!");
+            while (true) {
+                switch (montaMenu()) {
+                    case 1:
+                        switch (montaMenuUsuario()) {
+                            case 1:
+                                if (userLogged.getTipoUsuario() > 2) {
+                                    usuario.setNome(JOptionPane.showInputDialog(null, "Cadastro Usuario\nInforme o nome:"));
+                                    usuario.setSenha(JOptionPane.showInputDialog(null, "Informe uma senha:"));
+                                    usuario.setTipoUsuario(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe o tipo do usuário:\n")));
+                                    usuario.insert();
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Sem permissão!");
+                                }
                                 break;
                             case 2:
                                 int id;
@@ -101,7 +54,7 @@ public class Main {
                                 } else {
                                     id = userLogged.getIdUsuario();
                                 }
-
+                                
                                 Usuario user = new Usuario();
                                 switch (alteracaoUsuario()) {
                                     // NOME
@@ -121,11 +74,10 @@ public class Main {
                                         break;
                                     case 0:
                                         break;
-
+                                    
                                 }
                                 break;
                             case 3:
-
                                 if (userLogged.getTipoUsuario() > 2) {
                                     user = new Usuario();
                                     user.delete(Integer.parseInt(JOptionPane.showInputDialog(null, "Exclusão: \nInforme a ID do usuário que deseja excluir: ")));
@@ -150,7 +102,7 @@ public class Main {
                                     idUser = userLogged.getIdUsuario();
                                 }
                                 user = user.loadUser(idUser);
-
+                                
                                 JOptionPane.showMessageDialog(null, user.toString());
                                 break;
                             case 0:
@@ -158,13 +110,13 @@ public class Main {
                             default:
                                 JOptionPane.showInputDialog(null, "Opção inválida!");
                                 break;
-
+                            
                         }
                         break;
                     case 2:
                         switch (montaMenuProduto()) {
                             case 1:
-                                if (userLogged.getTipoUsuario() > 1) {
+                                if (usuario.getTipoUsuario() > 1) {
                                     Produto prod = new Produto();
                                     prod.setNome(JOptionPane.showInputDialog(null, "Cadastro:\n"
                                             + "Informe o nome do produto:"));
@@ -172,13 +124,14 @@ public class Main {
                                     prod.setX(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização x do produto:")));
                                     prod.setY(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização y do produto:")));
                                     prod.setZ(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a localização z do produto:")));
-
-                                    prod.setCategoria(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a categoria do prodto: " + auxLista)));
+                                    
+                                    prod.setCategoria(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a categoria do produto: " + auxListProd)));
                                     prod.insert();
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Sem permissão!");
                                 }
                                 break;
+                            
                             case 2:
                                 Produto prod;
                                 if (userLogged.getTipoUsuario() > 1) {
@@ -196,7 +149,7 @@ public class Main {
                                             break;
                                         case 3:
                                             prod = new Produto();
-                                            prod.setCategoria(Integer.parseInt(JOptionPane.showInputDialog("Informe a nova categoria do produto: \n" + auxLista)));
+                                            prod.setCategoria(Integer.parseInt(JOptionPane.showInputDialog("Informe a nova categoria do produto: \n" + auxListProd)));
                                             prod.update(id, 3);
                                             break;
                                         case 4:
@@ -215,19 +168,25 @@ public class Main {
                                             prod.update(id, 6);
                                         case 0:
                                             break;
-
+                                        
                                     }
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Sem permissão!");
                                 }
                                 break;
-
+                            
                             case 3:
-                                prod = new Produto();
-                                prod.delete(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a ID do produto que deseja excluir: ")));
+                                if (userLogged.getTipoUsuario() > 1) {
+                                    
+                                    prod = new Produto();
+                                    prod.delete(Integer.parseInt(JOptionPane.showInputDialog(null, "Informe a ID do produto que deseja excluir: ")));
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Sem permissão!");
+                                }
                                 break;
+                            
                             case 4:
-
+                                
                                 String auxProd = "";
                                 ArrayList<Produto> listProd = getAllProducts();
                                 for (Produto obj : listProd) {
@@ -256,7 +215,7 @@ public class Main {
                                 for (Produto obj : listaProdutos) {
                                     aux += "\n" + obj.getIdItemEstoque() + " - " + obj.getNome();
                                 }
-
+                                
                                 mvEstoque.setIdProduto(Integer.parseInt(JOptionPane.showInputDialog("Escolha o produto que deseja retirar: " + aux)));
                                 mvEstoque.setHorarioRetirado(JOptionPane.showInputDialog("Informe a data de retirada\n(DD-MM-AAAA)"));
                                 mvEstoque.setIdUsuario(userLogged.getIdUsuario());
@@ -265,7 +224,12 @@ public class Main {
                             case 2: // DEVOLVER
                                 MovimentarEstoque mvEstQ = new MovimentarEstoque();
                                 mvEstQ.setHorarioDevolucao(JOptionPane.showInputDialog("Informe a data de devolução: "));
-                                mvEstQ.setIdProduto(Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do produto que deseja devolver: ")));
+                                ArrayList<Produto> prodList = mvEstQ.retirados(userLogged.getIdUsuario());
+                                String auxP = "";
+                                for (Produto prodObj : prodList) {
+                                    auxP += "\n" + prodObj.getIdItemEstoque() + " - " + prodObj.getNome();
+                                }
+                                mvEstQ.setIdProduto(Integer.parseInt(JOptionPane.showInputDialog("Informe a ID do produto que deseja devolver: " + auxP)));
                                 mvEstQ.setIdUsuario(userLogged.getIdUsuario());
                                 mvEstQ.devolverProduto();
                                 break;
@@ -283,7 +247,7 @@ public class Main {
                                 break;
                         }
                         break;
-
+                    
                     case 4:/* IMPLEMENTAR FUTURAMENTE
                          switch(Integer.parseInt(JOptionPane.showInputDialog("1 - Categorias de Usuário\n2 - Categorias de Produto\n0 - Sair"))){
                          case 1:
@@ -302,7 +266,7 @@ public class Main {
                          break;
                             
                          }*/
-
+                        
                         break;
                     case 0:
                         System.exit(0);
@@ -311,9 +275,11 @@ public class Main {
                         JOptionPane.showMessageDialog(null, "Opção inválida!");
                 }
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Problema ao autenticar!");
         }
     }
-
+    
     public static int montaMenu() {
         int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "        Menu\n"
                 + "1 - Usuário\n"
@@ -322,18 +288,18 @@ public class Main {
                 + "0 - Sair\n"));
         return opcao;
     }
-
+    
     public static int montaMenuUsuario() {
-        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "-----Menu Usuário-----\n" +
-                "  1 - Cadastro\n" +
-                "  2 - Alteração de dados\n" +
-                "  3 - Exclusão de usuário\n" +
-                "  4 - Listar todos\n" +
-                "  5 - Listar especifico\n" +
-                "-----Informe a opção-----"));
+        int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "-----Menu Usuário-----\n"
+                + "  1 - Cadastro\n"
+                + "  2 - Alteração de dados\n"
+                + "  3 - Exclusão de usuário\n"
+                + "  4 - Listar todos\n"
+                + "  5 - Listar especifico\n"
+                + "-----Informe a opção-----"));
         return opcao;
     }
-
+    
     public static int alteracaoUsuario() {
         int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "      Alteração de dados\n"
                 + "       Escolha o que deseja alterar:\n"
@@ -343,7 +309,7 @@ public class Main {
                 + "0 - Sair"));
         return opcao;
     }
-
+    
     public static int montaMenuProduto() {
         int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "        Menu Produto\n"
                 + "1 - Cadastro\n"
@@ -354,7 +320,7 @@ public class Main {
                 + "0 - Sair"));
         return opcao;
     }
-
+    
     public static int alteracaoProdutos() {
         int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "      Alteração de dados\n"
                 + "       Escolha o que deseja alterar:\n"
@@ -367,7 +333,7 @@ public class Main {
                 + "0-Sair"));
         return opcao;
     }
-
+    
     public static int menuMovimentarEstoque() {
         int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, "    Menu de movimentação de estoque\n"
                 + "1 - Retirar produto\n"
@@ -376,5 +342,5 @@ public class Main {
                 + "0 - Sair"));
         return opcao;
     }
-
+    
 }

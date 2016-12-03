@@ -87,7 +87,6 @@ public class MovimentarEstoque {
 
     }
 
-
     public static ArrayList<MovimentarEstoque> loadRetirado(int idUser) {
         String selectSQL = "SELECT * FROM retirado_usuario_estoque WHERE id_usuario = " + idUser + " ORDER BY id_item_estoque DESC";
         Conexao c = new Conexao();
@@ -135,17 +134,39 @@ public class MovimentarEstoque {
         Conexao c = new Conexao();
         Connection dbConnection = c.getConexao();
         PreparedStatement pS = null;
-        String updateSQL = "UPDATE retirado_usuario_estoque SET data_devolucao = '?' WHERE id_usuario = ? AND id_item_estoque = ?";
+        String updateSQL = "UPDATE retirado_usuario_estoque SET data_devolucao = '" + this.horarioDevolucao + "' WHERE id_usuario = " + this.idUsuario + " AND id_item_estoque =" + idProduto + " AND data_devolucao IS NULL";
         try {
             pS = dbConnection.prepareStatement(updateSQL);
-            pS.setString(1, this.horarioDevolucao);
-            pS.setInt(2, this.idUsuario);
-            pS.setInt(3, this.idProduto);
+            // Misteriosamente isso não funciona mas a parte de cima deu resultado, então vamos deixar assim.
+            //pS.setString(1, this.horarioDevolucao);
+            //pS.setInt(2, this.idUsuario);
+            //pS.setInt(3, this.idProduto);
             pS.executeUpdate();
             c.desconecta();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Produto> retirados(int id) {
+        Conexao c = new Conexao();
+        Connection dbConnection = c.getConexao();
+        ArrayList<Produto> lista = new ArrayList<>();
+        try {
+            Statement pS = dbConnection.createStatement();
+
+            ResultSet rs = pS.executeQuery("SELECT p.id_item_estoque, nome_item FROM produto p, retirado_usuario_estoque r WHERE id_usuario = " + id + " AND r.id_item_estoque = p.id_item_estoque AND data_devolucao IS NULL");
+            while (rs.next()) {
+                Produto prod = new Produto();
+                prod.setNome(rs.getString("nome_item"));
+                prod.setIdItemEstoque(rs.getInt("id_item_estoque"));
+                lista.add(prod);
+            }
+
+        } catch (SQLException f) {
+            f.printStackTrace();
+        }
+        return lista;
     }
 
 }

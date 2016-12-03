@@ -129,7 +129,7 @@ public class Produto {
     }
 
     public static ArrayList<Produto> getAllProducts() {
-        String selectSQL = "SELECT * FROM produto";
+        String selectSQL = "SELECT * FROM produto ORDER BY id_item_estoque ASC";
         Conexao c = new Conexao();
         ArrayList<Produto> lista = new ArrayList<>();
         Connection dbConnection = c.getConexao();
@@ -157,7 +157,7 @@ public class Produto {
     }
 
     public static Produto loadID(int id) {
-        String selectSQL = "SELECT * FROM produto WHERE id_item_estoque= '" + id + "'";
+        String selectSQL = "SELECT * FROM produto WHERE id_item_estoque= '" + id + "' ORDER BY id_item_estoque ASC";
         Produto prod = new Produto();
         Conexao c = new Conexao();
         Connection dbConnection = c.getConexao();
